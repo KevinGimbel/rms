@@ -3,8 +3,6 @@
 #
 # Savely remove files by placing them in /tmp/rms
 
-# Create new Virtual Hosts on the fly
-
 VERSION="0.0.1"
 
 # Color Variables and escaping hell
