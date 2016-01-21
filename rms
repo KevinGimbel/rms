@@ -1,0 +1,86 @@
+#!/bin/bash
+# rmSave
+#
+# Savely remove files by placing them in /tmp/rms
+
+# Create new Virtual Hosts on the fly
+
+VERSION="0.0.1"
+
+# Color Variables and escaping hell
+GREEN="\e[;92m"
+RED="\e[;31m"
+BLUE="\e[;94m"
+RESET="\e[;0m"
+
+CHECKSIGN="$GREEN✓$RESET "
+CROSS="$RED❌$RESET "
+
+usage() {
+echo -e "
+  Moves the file or folder to the /tmp/rms directory so it can be restored.
+  
+  USAGE:
+    rms [file|folder] 
+  
+  $GREEN--usage   | usage   | -u$RESET Display usage info
+  $GREEN--version | version | -v$RESET Show version
+  $GREEN--recover | recover | -r$RESET Recover a file from /tmp/rms
+"
+}
+
+version() {
+  echo -e "rms - version $GREEN$VERSION$RESET"  
+  echo -e "Made by Kevin Gimbel <$BLUE""http://kevingimbel.com""$RESET>"
+}
+
+rms() {
+  if [ ! -d "/tmp/rms" ]; then
+    mkdir -p /tmp/rms
+  fi
+
+  mv $1 /tmp/rms
+  echo -e "$CHECKSIGN moved $1 to /tmp/rms"
+}
+
+recover() {
+  if [ ! -d "/tmp/rms" ]; then
+    echo -e "$CROSSSIGN Unable to open /tmp/rms"
+    exit
+  else
+    mv /tmp/rms/$1 . || echo -e "$CROSS Unable to move file!" && exit
+    echo -e "$CHECKSIGN Recovered file to $(pwd)"
+  fi
+}
+
+# call functions defined above based on passed parameter
+if [ $1 ]
+  then
+    # Here we support all kinds of getting help and usage messages.
+    # Some use a word, some a single hypen and others two hypens.
+    # since I HATE when I get this wrong I support all of them because
+    # why not?
+    case $1 in
+      'help' | '--help' | '-h' | 'usage' | '--usage' | '-u')
+        usage
+        ;;
+
+      'version' | '--version' | '-v')
+        version
+        ;;
+
+      'recover' | '--recover' | '-r')
+        recover $2
+        ;;
+
+      *)
+        rms $1
+        ;;
+    esac
+  exit 1
+fi
+
+if [ -n $1 ]; then
+  version
+  usage
+fi
