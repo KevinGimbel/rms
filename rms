@@ -46,8 +46,12 @@ recover() {
     echo -e "$CROSSSIGN Unable to open /tmp/rms"
     exit
   else
-    mv /tmp/rms/$1 . || echo -e "$CROSS Unable to move file!" && exit
-    echo -e "$CHECKSIGN Recovered file to $(pwd)"
+    mv /tmp/rms/$1 . 
+    if [ -f ./$1 ]; then
+      echo -e "$CHECKSIGN Recovered file to $(pwd)"
+    else
+      echo -e "$CROSS Unable to move file!" 
+    fi
   fi
 }
 
